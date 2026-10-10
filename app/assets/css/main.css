@@ -1,0 +1,21 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+@theme inline {
+    --color-ivory: var(--ivory);
+    --font-script: var(--ff-script);
+    --color-ivory-deep: var(--ivory-deep);
+    --color-ink: var(--ink);
+    --color-bronze: var(--bronze);
+    --color-gold: var(--gold);
+    --color-gold-soft: var(--gold-soft);
+    --color-sage: var(--sage);
+    --color-peach: var(--day-peach);
+    --color-lilac: var(--day-lilac);
+    --color-burnt: var(--day-burnt-orange);
+    --color-gate: var(--gate-sky);
+
+    --font-display: var(--ff-display);
+    --font-serif: var(--ff-serif);
+    --font-caps: var(--ff-caps);
+}

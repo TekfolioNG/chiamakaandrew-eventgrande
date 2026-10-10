@@ -1,0 +1,133 @@
+/**
+ * tokens.css — design tokens derived from the Chiamaka & Andrew invitation card.
+ * Colours were estimated by eye from the card image: re-sample from the
+ * designer's source file before sign-off.
+ * Rule: gold is ornament only. Never use --gold or --gold-soft for body text.
+ */
+
+:root {
+    color-scheme: light;
+
+    /* Base palette */
+    --ivory: #faf6ef;
+    /* page ground, the card's paper */
+    --ivory-deep: #f1e9db;
+    /* panels, quiet separators */
+    --ink: #2b2118;
+    /* body text, 14:1 on ivory */
+    --bronze: #7a4e1f;
+    /* headings and script names, ~6.5:1 on ivory */
+    --gold: #b88a4a;
+    /* ornament, hairlines, icons */
+    --gold-soft: #d4b483;
+    /* arch line, RSVP card surface */
+    --sage: #8a8f7a;
+    /* leaf motifs */
+
+    /* Colours of the day (match config.colorsOfTheDay) */
+    --day-peach: #f2c4a4;
+    --day-lilac: #c9b8dc;
+    --day-champagne: #d4b483;
+    --day-burnt-orange: #c2561f;
+
+    --gate-sky: #06070a;
+    /* matte black */
+    --gate-sky-glow: #16224a;
+    /* soft blue lift */
+    --night-top: #0b1228;
+    /* deep navy */
+    --rose: #e05a73;
+    /* heart on hover */
+    --night-bg:
+        radial-gradient(ellipse at 50% 38%, var(--gate-sky-glow) 0%, transparent 60%),
+        linear-gradient(180deg, var(--night-top) 0%, var(--gate-sky) 100%);
+
+    /* Type */
+    --ff-script: 'Great Vibes', Georgia, serif;
+    --ff-display: 'Bodoni Moda', 'Didot', 'Bodoni 72', Georgia, serif;
+    /* names, monogram text */
+    --ff-serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+    /* body, italic lead-ins */
+    --ff-caps: 'Marcellus', 'Cormorant Garamond', Georgia, serif;
+    /* families line, venue, labels */
+    /* Placeholders: confirm the card's actual fonts, then swap here only. */
+
+    --step--1: clamp(0.875rem, 0.84rem + 0.15vw, 0.95rem);
+    --step-0: clamp(1.05rem, 1rem + 0.25vw, 1.2rem);
+    --step-1: clamp(1.25rem, 1.15rem + 0.5vw, 1.55rem);
+    --step-2: clamp(1.6rem, 1.4rem + 1vw, 2.2rem);
+    --step-3: clamp(2.2rem, 1.8rem + 2vw, 3.4rem);
+    --step-names: clamp(3rem, 2rem + 6vw, 7rem)
+        /* script names */
+        --step-numerals: clamp(2.6rem, 2rem + 4vw, 5rem);
+    /* countdown */
+
+    --leading-serif: 1.6;
+    --measure: 34rem;
+    /* max line length for prose */
+
+    /* Space and shape */
+    --space-1: 0.5rem;
+    --space-2: 1rem;
+    --space-3: 1.5rem;
+    --space-4: 2.5rem;
+    --space-5: 4rem;
+    --space-section: clamp(5rem, 12svh, 9rem);
+
+    --radius-field: 0.75rem;
+    /* inputs and buttons */
+    --radius-card: 1.5rem;
+    /* RSVP card, matches the card's rounded box */
+    --arch: 50% 50% 0 0 / 38% 38% 0 0;
+    /* base arch for gallery frames; refine with an SVG clip-path traced from the card's gold line */
+
+    /* Motion: slow, soft, one idea per screen */
+    --ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+    --ease-settle: cubic-bezier(0.16, 1, 0.3, 1);
+    --dur-quick: 240ms;
+    --dur-base: 700ms;
+    --dur-slow: 1400ms;
+
+    --focus-ring: 0 0 0 3px var(--ivory), 0 0 0 5px var(--bronze);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    :root {
+        --dur-quick: 1ms;
+        --dur-base: 1ms;
+        --dur-slow: 1ms;
+    }
+}
+
+html {
+    background: var(--ivory);
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    color: var(--ink);
+    font-family: var(--ff-serif);
+    font-size: var(--step-0);
+    font-weight: 500;
+    line-height: var(--leading-serif);
+}
+
+:focus-visible {
+    outline: 2px solid var(--bronze);
+    outline-offset: 3px;
+}
+
+.couple-names {
+    font-family: var(--ff-script);
+    font-weight: 400;
+    font-size: var(--step-names);
+    line-height: 1.1;
+    color: var(--bronze);
+}
+
+.families-line {
+    font-family: var(--ff-caps);
+    font-size: var(--step--1);
+    letter-spacing: 0.08em;
+    color: var(--ink);
+}
