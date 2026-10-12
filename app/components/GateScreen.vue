@@ -1,29 +1,113 @@
 <script setup lang="ts">
-const emit = defineEmits<{ open: [opts: { sound: boolean }] }>()
+import { gsap } from 'gsap';
+import { defineEmits, } from 'vue';
+
+const emit = defineEmits<{ open: []; done: [] }>()
 const w = useWedding()
 const copy = w.gate.copy
+const music = useMusic()
+
+const gateEl = ref<HTMLElement>()
+const droneRef = ref<{ $el: SVGSVGElement; lift?: SVGGElement }>()
+const heartRef = ref<{ svg?: SVGSVGElement }>()
 
 const hot = ref(false)
+const flying = ref(false)
+const busy = ref(false)
+
 const onEnter = (e: PointerEvent) => {
     if (e.pointerType === 'mouse') hot.value = true
 }
-const onLeave = () => { hot.value = false }
+const onLeave = () => {
+    if (!busy.value) hot.value = false
+}
 
-// Step 3 replaces this with the takeoff animation and the music
-const open = (sound: boolean) => emit('open', { sound })
+let mm: gsap.MatchMedia | undefined
+
+const takeoff = () => {
+    const root = gateEl.value
+    const lift = droneRef.value?.lift
+    const droneEl = droneRef.value?.$el
+    const heartSvg = heartRef.value?.svg
+
+    mm = gsap.matchMedia()
+
+    // Reduced motion: no flight, just a quick fade
+    mm.add('(prefers-reduced-motion: reduce)', () => {
+        emit('open')
+        gsap.to(root!, { opacity: 0, duration: 0.5, onComplete: () => emit('done') })
+    })
+
+    mm.add('(prefers-reduced-motion: no-preference)', () => {
+        if (!root || !lift || !droneEl || !heartSvg) {
+            emit('open')
+            emit('done')
+            return
+        }
+
+        // The drone lives in SVG units, so convert screen pixels into those units
+        const u = (px: number) => px * (240 / droneEl.getBoundingClientRect().width)
+        const lights = heartSvg.querySelectorAll('.light')
+        const line = heartSvg.querySelector('.heart__line')
+        const words = root.querySelectorAll('.gate__headline, .gate__names, .gate__cta, .gate__silent')
+
+        const tl = gsap.timeline({ onComplete: () => emit('done') })
+
+        // words fade away
+        tl.to(words, { opacity: 0, y: 8, duration: 0.5, ease: 'power1.out' }, 0)
+
+        // the heart's lights burst upward like lanterns
+        if (line) tl.to(line, { opacity: 0, duration: 0.8 }, 0)
+        tl.fromTo(
+            lights,
+            { opacity: 1 },
+            {
+                opacity: 0,
+                x: () => gsap.utils.random(-22, 22),
+                y: () => -gsap.utils.random(50, 150),
+                duration: 1.6,
+                ease: 'power1.out',
+                stagger: { amount: 0.7, from: 'center' },
+            },
+            0.1,
+        )
+
+        // the drone dips back, then sweeps up and away in an arc
+        tl.to(lift, { y: 6, rotation: -5, svgOrigin: '120 100', duration: 0.3, ease: 'power1.out' }, 0.1)
+        tl.to(lift, { x: u(window.innerWidth * 0.8), duration: 1.7, ease: 'power2.in' }, 0.4)
+        tl.to(lift, { y: -u(window.innerHeight * 0.85), duration: 1.7, ease: 'power2.out' }, 0.4)
+        tl.to(lift, { rotation: 16, scale: 0.4, duration: 1.7, ease: 'power1.inOut' }, 0.4)
+
+        // the page appears underneath, then the gate dissolves
+        tl.call(() => emit('open'), [], 1.2)
+        tl.to(root, { opacity: 0, duration: 0.9, ease: 'power1.inOut' }, 1.5)
+    })
+}
+
+const go = async (sound: boolean) => {
+    if (busy.value) return
+    busy.value = true
+    // Must stay first: browsers only allow sound inside the tap itself
+    if (sound) music.start()
+    hot.value = true
+    flying.value = true
+    await nextTick()
+    takeoff()
+}
+
+onBeforeUnmount(() => mm?.revert())
 </script>
 
 <template>
-    <section class="gate" :class="{ 'is-hot': hot }">
-
-        <button type="button" class="gate__open" :aria-label="copy.cta" @pointerenter="onEnter" @pointerleave="onLeave"
-            @focus="hot = true" @blur="hot = false" @click="open(true)">
+    <section ref="gateEl" class="gate" :class="{ 'is-hot': hot, 'is-flying': flying }">
+        <button type="button" class="gate__open" :aria-label="copy.cta" :disabled="busy" @pointerenter="onEnter"
+            @pointerleave="onLeave" @focus="hot = true" @blur="onLeave" @click="go(true)">
             <span class="gate__stage">
                 <span class="gate__glow gate__glow--gold" aria-hidden="true" />
                 <span class="gate__glow gate__glow--rose" aria-hidden="true" />
-                <GateDrone class="gate__drone" :hot="hot" />
+                <GateDrone ref="droneRef" class="gate__drone" :hot="hot" />
                 <span class="gate__heart">
-                    <GateHeart :hot="hot" />
+                    <GateHeart ref="heartRef" :hot="hot" :flying="flying" />
                 </span>
             </span>
 
@@ -32,7 +116,7 @@ const open = (sound: boolean) => emit('open', { sound })
             <span class="gate__cta">{{ copy.cta }}</span>
         </button>
 
-        <button type="button" class="gate__silent" @click="open(false)">
+        <button type="button" class="gate__silent" :disabled="busy" @click="go(false)">
             {{ copy.silent }}
         </button>
     </section>
@@ -48,12 +132,13 @@ const open = (sound: boolean) => emit('open', { sound })
     grid-template-rows: 1fr auto;
     justify-items: center;
     overflow: hidden;
-    /* the gate never scrolls: everything below scales with screen height */
+    /* the gate never scrolls: everything scales with screen height */
     padding:
         max(0.9rem, env(safe-area-inset-top)) var(--space-3) max(0.4rem, env(safe-area-inset-bottom));
     background: var(--night-bg);
     color: var(--gate-particle);
-    animation: gate-in 1200ms var(--ease-soft) both;
+    /* "backwards" (not "both"): otherwise the animation would keep overriding the exit fade */
+    animation: gate-in 1200ms var(--ease-soft) backwards;
 }
 
 .gate.is-hot {
@@ -75,7 +160,6 @@ const open = (sound: boolean) => emit('open', { sound })
     outline-offset: 6px;
 }
 
-
 /* The one big button */
 .gate__open {
     display: flex;
@@ -95,12 +179,17 @@ const open = (sound: boolean) => emit('open', { sound })
     cursor: pointer;
 }
 
+.gate__open:disabled,
+.gate__silent:disabled {
+    cursor: default;
+}
+
 .gate__stage {
     position: relative;
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     justify-items: center;
     width: min(100%, 17rem, 28svh);
-    grid-template-columns: minmax(0, 1fr);
     /* the heart's width follows screen height */
 }
 
@@ -199,6 +288,12 @@ const open = (sound: boolean) => emit('open', { sound })
     50% {
         opacity: 1;
     }
+}
+
+/* Once the takeoff starts, stop the looping animations so the exit fades can take over */
+.gate.is-flying .gate__cta,
+.gate.is-flying .gate__glow--gold {
+    animation: none;
 }
 
 .gate__silent {

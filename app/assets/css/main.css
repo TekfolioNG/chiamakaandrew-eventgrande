@@ -19,3 +19,91 @@
     --font-serif: var(--ff-serif);
     --font-caps: var(--ff-caps);
 }
+
+/* Scroll reveal: elements start hidden, GSAP fades them up (see useReveal) */
+[data-reveal] {
+    opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    [data-reveal] {
+        opacity: 1;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+    }
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.95rem 1.8rem;
+    border-radius: var(--radius-field);
+    font-family: var(--ff-caps);
+    font-size: var(--step--1);
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+        background-color var(--dur-quick) var(--ease-soft),
+        border-color var(--dur-quick) var(--ease-soft);
+}
+
+.btn--gold {
+    background: var(--gold-soft);
+    color: #1b1309;
+}
+
+.btn--gold:hover {
+    background: #e3c898;
+}
+
+.btn--ghost {
+    border: 1px solid rgb(212 180 131 / 0.6);
+    color: var(--gold-soft);
+}
+
+.btn--ghost:hover {
+    background: rgb(212 180 131 / 0.12);
+}
+
+/* Section backgrounds: alternate these down the page */
+.band-0 {
+    background: var(--night-0);
+}
+
+.band-1 {
+    background: var(--night-1);
+}
+
+.band-2 {
+    background: var(--night-2);
+}
+
+/* Starts exactly where the hero ends, then gets slightly deeper */
+.band-date {
+    background: linear-gradient(180deg, var(--night-0) 0%, #040508 100%);
+}
+
+/* Lifts very slightly to navy in the middle, then returns to matte black */
+.band-moments {
+    background: linear-gradient(180deg, #040508 0%, #080c18 45%, var(--night-0) 100%);
+}
+
+.band-details {
+    background: linear-gradient(180deg, var(--night-0) 0%, #0a0f1e 100%);
+}
+
+.band-colors {
+    background: linear-gradient(180deg, #0a0f1e 0%, #07090f 100%);
+}
+
+.band-order {
+    background: linear-gradient(180deg, #07090f 0%, #05060a 100%);
+}

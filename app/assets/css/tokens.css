@@ -41,6 +41,17 @@
     --night-bg:
         radial-gradient(ellipse at 50% 38%, var(--gate-sky-glow) 0%, transparent 60%),
         linear-gradient(180deg, var(--night-top) 0%, var(--gate-sky) 100%);
+    /* Night palette: the whole page lives here now */
+    --night-0: #06070a;
+    /* matte black */
+    --night-1: #0a0f1e;
+    /* blue-black */
+    --night-2: #111a30;
+    /* raised panels */
+    --cream: #f6ecd8;
+    /* headings */
+    --mist: #cfc8b8;
+    /* body text */
 
     /* Type */
     --ff-script: 'Great Vibes', Georgia, serif;
@@ -100,12 +111,12 @@
 }
 
 html {
-    background: var(--ivory);
+    background: var(--night-0);
     -webkit-text-size-adjust: 100%;
 }
 
 body {
-    color: var(--ink);
+    color: var(--mist);
     font-family: var(--ff-serif);
     font-size: var(--step-0);
     font-weight: 500;

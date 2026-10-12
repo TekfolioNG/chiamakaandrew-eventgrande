@@ -5,6 +5,7 @@ useSeoMeta({
   title: w.share.title,
   description: w.share.description,
   ogTitle: w.share.title,
+  robots: 'noindex, nofollow',
   ogDescription: w.share.description,
   ogImage: w.share.ogImage,
   twitterCard: 'summary_large_image',

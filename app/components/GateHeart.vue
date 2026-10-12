@@ -1,5 +1,5 @@
 <script setup lang="ts">
-defineProps<{ hot: boolean }>()
+defineProps<{ hot: boolean; flying?: boolean }>()
 
 const COUNT = 72
 const pts = Array.from({ length: COUNT }, (_, i) => {
@@ -22,7 +22,8 @@ defineExpose({ svg })
 </script>
 
 <template>
-    <svg ref="svg" class="heart" :class="{ 'is-hot': hot }" viewBox="0 0 100 100" aria-hidden="true">
+    <svg ref="svg" class="heart" :class="{ 'is-hot': hot, 'is-flying': flying }" viewBox="0 0 100 100"
+        aria-hidden="true">
         <path class="heart__line" :d="outline" />
         <circle v-for="(p, i) in pts" :key="i" class="light" :cx="p.x" :cy="p.y" :r="p.r"
             :style="{ '--dur': `${p.dur}s`, '--del': `-${p.del}s` }" />
@@ -40,6 +41,14 @@ defineExpose({ svg })
 
 .heart.is-hot {
     animation: beat 1.6s ease-in-out infinite;
+}
+
+.heart.is-flying {
+    animation: none;
+}
+
+.heart.is-flying .light {
+    animation: none;
 }
 
 .heart__line {

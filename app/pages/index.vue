@@ -2,6 +2,7 @@
 const w = useWedding()
 const { stage } = useStage()
 const { progress, run } = usePreloader()
+const gateExiting = ref(false)
 
 onMounted(async () => {
     document.documentElement.style.overflow = 'hidden'
@@ -13,6 +14,12 @@ onMounted(async () => {
 watch(stage, (s) => {
     document.documentElement.style.overflow = s === 'invite' ? '' : 'hidden'
 })
+
+// The page mounts underneath while the gate is still fading out
+const onOpen = () => {
+    gateExiting.value = true
+    stage.value = 'invite'
+}
 </script>
 
 <template>
@@ -21,16 +28,30 @@ watch(stage, (s) => {
             <WeddingLoader v-if="stage === 'loading'" :progress="progress" />
         </Transition>
 
-        <GateScreen v-if="stage === 'gate'" @open="stage = 'invite'" />
+        <GateScreen v-if="stage === 'gate' || gateExiting" @open="onOpen" @done="gateExiting = false" />
 
-        <!-- Temporary invite page, replaced when we build the main page -->
-        <main v-else-if="stage === 'invite'" class="min-h-svh grid place-items-center text-center px-6">
-            <div>
-                <p class="families-line">Cordially invite you</p>
-                <h1 class="couple-names">{{ w.couple.partnerA.first }} &amp; {{ w.couple.partnerB.first }}</h1>
-                <p class="font-caps text-gold mt-4">19 December 2026</p>
-            </div>
-        </main>
+        <template v-if="stage === 'invite'">
+            <main>
+                <SectionHero />
+
+                <SectionDate />
+                <SectionMoments />
+                <SectionDetails />
+                <SectionColors />
+                <SectionOrder />
+
+                <section id="rsvp" class="min-h-svh grid place-items-center text-center px-6"
+                    style="background: #05060a">
+                    <p class="font-caps tracking-widest text-gold">RSVP: later</p>
+                </section>
+
+                <section id="rsvp" class="min-h-svh grid place-items-center text-center px-6"
+                    style="background: #040508">
+                    <p class="font-caps tracking-widest text-gold">RSVP: later</p>
+                </section>
+            </main>
+            <MusicToggle />
+        </template>
     </div>
 </template>
 

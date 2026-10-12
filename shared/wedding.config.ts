@@ -15,6 +15,13 @@ export interface Person {
     full: string
 }
 
+export interface HeroSlide {
+    src: string
+    alt: string
+    kind: 'photo' | 'cutout' | 'badge' // cutout = white background, badge = the monogram
+    focal?: string // CSS object-position
+}
+
 export interface Swatch {
     id: string
     name: string
@@ -39,10 +46,18 @@ export interface GalleryPhoto {
     focal?: [number, number] // 0–1 focal point for arch cropping
 }
 
+export interface Moment {
+    src: string
+    alt: string
+    caption: string
+    kind: 'photo' | 'cutout' // cutout = white background
+    focal?: string // CSS object-position
+}
+
 export interface WeddingConfig {
     slug: string
     couple: { partnerA: Person; partnerB: Person; monogram: string }
-    families: { line: string }
+    families: { line: string; names: string }
     event: {
         startISO: string // always include the UTC offset
         timezone: string // IANA zone, used for .ics and the countdown label
@@ -64,8 +79,28 @@ export interface WeddingConfig {
         particleCount: { desktop: number; mobile: number }
         morphTarget: string // SVG whose outline the heart morphs into
         skippable: boolean
-        music: { enabled: boolean; src: string }
+        music: { enabled: boolean; src: string; volume: number; fadeMs: number }
         copy: { headline: string; cta: string; silent: string }
+    }
+    hero: {
+        bg: string
+        alt: string
+        eyebrow: string
+        cta: string
+        slides: HeroSlide[]
+        slideMs: number
+    }
+    reveal: {
+        eyebrow: string
+        familiesLead: string
+        familiesTail: string
+        scratchTitle: string
+        scratchSub: string
+        revealButton: string
+        calendarButton: string
+        countdownLabel: string
+        marriedLabel: string
+        place: string[]
     }
     rsvp: {
         deadlineISO: string // PLACEHOLDER; the API refuses RSVPs after this
@@ -82,8 +117,14 @@ export interface WeddingConfig {
         minMs: number
         maxMs: number
         preload: string[]
-
     }
+    invitation: {
+        inviteLine: string
+        toThe: string
+        title: string
+        ofTheir: string
+    }
+
     contacts: Array<{ name: string; phone: string; showPublic: boolean }>
     share: {
         title: string
@@ -98,6 +139,15 @@ export interface WeddingConfig {
         closedPageAfterEvent: boolean
         closedAtISO: string // PLACEHOLDER; when /closed takes over
     }
+    moments: {
+        eyebrow: string
+        title: string
+        speed: number // pixels per second
+        items: Moment[]
+    }
+    details: { eyebrow: string; lead: string; mapsButton: string; calendarButton: string }
+    colorDay: { eyebrow: string; title: string; hint: string }
+    order: { eyebrow: string; title: string }
 }
 
 // Anything listed here blocks the production build (checked later by scripts/check-config.mjs)
@@ -125,6 +175,7 @@ export default defineWeddingConfig({
 
     families: {
         line: 'The families of Late Sunday Ihekauche & Dr. Sunday Chinasaokwu Uchella',
+        names: 'Late Sunday Ihekauche & Dr. Sunday Chinasaokwu Uchella',
     },
 
     event: {
@@ -190,7 +241,7 @@ export default defineWeddingConfig({
         particleCount: { desktop: 2400, mobile: 1500 },
         morphTarget: '/brand/monogram-ca.png',
         skippable: true,
-        music: { enabled: false, src: '' },
+        music: { enabled: true, src: '/audio/roju.mp3', volume: 0.35, fadeMs: 2500 },
         copy: {
             headline: 'Your invitation has arrived',
             cta: 'Tap to receive',
@@ -228,15 +279,80 @@ export default defineWeddingConfig({
     loader: {
         lines: [
             'You’re here, and that means a lot to us.',
-            'We saved you a seat at the table.',
             'A moment, please...',
             'We’re preparing your invitation.',
+            'So we can save you a seat for our day.',
         ],
         lineMs: 2000,
         minMs: 6000, // 3 lines x 1.8s, so every line is seen once
         maxMs: 8000,
-        preload: ['/brand/monogram-ca.png'],
+        preload: ['/brand/monogram-ca.png', '/hero/couple-hero.webp'],
 
+    },
+    hero: {
+        bg: '/hero/couple-hero.webp',
+        alt: 'Chiamaka and Andrew leaning on a golden railing, smiling',
+        eyebrow: 'You’re specially invited to the wedding of',
+        cta: 'Save your seat',
+        slideMs: 5500,
+        slides: [
+            { src: '/hero/couple-hero.jpeg', alt: 'The couple leaning on a golden railing, smiling', kind: 'photo', focal: '50% 30%' },
+            { src: '/hero/couple-02.jpeg', alt: 'The couple embracing', kind: 'photo', focal: '50% 30%' },
+            { src: '/hero/couple-03.jpeg', alt: 'The couple in traditional attire', kind: 'cutout', focal: '50% 8%' },
+            { src: '/hero/couple-04.jpeg', alt: 'The couple in formal evening wear', kind: 'cutout', focal: '50% 8%' },
+            { src: '/hero/couple-05.jpeg', alt: 'The couple in matching white jackets', kind: 'cutout', focal: '50% 8%' },
+            { src: '/hero/couple-06.jpeg', alt: 'The couple at an ornate bronze door', kind: 'photo', focal: '50% 40%' },
+
+        ],
+    },
+    reveal: {
+        eyebrow: 'The date',
+        familiesLead: 'The families of',
+        familiesTail: 'cordially invite you to celebrate with them.',
+        scratchTitle: 'Scratch to reveal',
+        scratchSub: 'the wedding date',
+        revealButton: 'Reveal the date',
+        calendarButton: 'Add to calendar',
+        countdownLabel: 'Counting down to the day',
+        marriedLabel: 'Married for',
+        place: ['Lagos', 'Nigeria'],
+
+    },
+    invitation: {
+        inviteLine: 'Cordially invite you',
+        toThe: 'To the',
+        title: 'Wedding',
+        ofTheir: 'of their children',
+    },
+    moments: {
+        eyebrow: 'The two of us',
+        title: 'Moments we hold close',
+        speed: 38,
+        items: [
+            { src: '/moments/moment-01.webp', alt: 'The couple embracing', caption: 'Home is each other', kind: 'photo', focal: '50% 30%' },
+            { src: '/moments/moment-02.webp', alt: 'The couple leaning on a golden railing', caption: 'Side by side', kind: 'photo', focal: '50% 30%' },
+            { src: '/moments/moment-03.webp', alt: 'The couple in traditional attire', caption: 'Dressed in heritage', kind: 'cutout', focal: '50% 8%' },
+            { src: '/moments/moment-04.webp', alt: 'The couple in formal evening wear', caption: 'Evening elegance', kind: 'cutout', focal: '50% 8%' },
+            { src: '/moments/moment-05.webp', alt: 'The couple in matching white jackets', caption: 'Always matching', kind: 'cutout', focal: '50% 8%' },
+            { src: '/moments/moment-06.webp', alt: 'The couple at an ornate bronze door', caption: 'Our door, our beginning', kind: 'photo', focal: '50% 40%' },
+        ],
+    },
+    details: {
+        eyebrow: 'The venue',
+        lead: 'Join us at',
+        mapsButton: 'Open in Maps',
+        calendarButton: 'Add to calendar',
+    },
+
+    colorDay: {
+        eyebrow: 'Color of the Day',
+        title: 'Wear the colors of the day',
+        hint: 'Tap a color to see how to wear it',
+    },
+
+    order: {
+        eyebrow: 'Order of the day',
+        title: 'How the day unfolds',
     },
 })
 
