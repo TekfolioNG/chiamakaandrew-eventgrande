@@ -39,4 +39,10 @@ export default defineNuxtConfig({
     '/i/**': { ssr: true },        // Dynamic invitations rendered instantly on the server
     '/admin/**': { ssr: false },   // Private dashboards load as a client-side Single Page App (SPA)
   },
+  nitro: {
+    // RSVPs: a local folder in development, a Cloudflare KV namespace (bound as RSVP) once deployed
+    storage: { rsvp: { driver: 'cloudflare-kv-binding', binding: 'RSVP' } },
+    devStorage: { rsvp: { driver: 'fs', base: './.data/rsvp' } },
+  },
+  runtimeConfig: { turnstile: { secretKey: '' } },
 })

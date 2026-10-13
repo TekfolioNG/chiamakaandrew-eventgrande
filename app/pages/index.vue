@@ -5,13 +5,16 @@ const { progress, run } = usePreloader()
 const gateExiting = ref(false)
 
 onMounted(async () => {
+    // coming back from the thank-you page: the invitation is already open
+    if (stage.value === 'invite') return
+
     document.documentElement.style.overflow = 'hidden'
     await run({ minMs: w.loader.minMs, maxMs: w.loader.maxMs, assets: w.loader.preload })
     stage.value = 'gate'
 })
 
 // release the scroll lock only once the invite itself is open
-watch(stage, (s) => {
+watch(stage, (s: string) => {
     document.documentElement.style.overflow = s === 'invite' ? '' : 'hidden'
 })
 
@@ -33,22 +36,12 @@ const onOpen = () => {
         <template v-if="stage === 'invite'">
             <main>
                 <SectionHero />
-
                 <SectionDate />
                 <SectionMoments />
                 <SectionDetails />
                 <SectionColors />
                 <SectionOrder />
-
-                <section id="rsvp" class="min-h-svh grid place-items-center text-center px-6"
-                    style="background: #05060a">
-                    <p class="font-caps tracking-widest text-gold">RSVP: later</p>
-                </section>
-
-                <section id="rsvp" class="min-h-svh grid place-items-center text-center px-6"
-                    style="background: #040508">
-                    <p class="font-caps tracking-widest text-gold">RSVP: later</p>
-                </section>
+                <SectionRsvp />
             </main>
             <MusicToggle />
         </template>

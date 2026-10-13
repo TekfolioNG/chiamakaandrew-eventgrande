@@ -109,6 +109,33 @@ export interface WeddingConfig {
         addressPurpose: string // shown to guests; must state why we ask
         allowEditUntilDeadline: boolean
         defaultCountry: string // ISO 3166-1 alpha-2 for the phone picker
+        copy: {
+            eyebrow: string
+            title: string
+            attendLabel: string
+            yes: string
+            no: string
+            name: string
+            phone: string
+            phoneHint: string
+            guests: string
+            address: string
+            message: string
+            send: string
+            sending: string
+            delivered: string
+            closed: string
+            errors: { attending: string; phone: string; token: string; generic: string; closed: string }
+        }
+        thanks: {
+            eyebrow: string
+            yesTitle: string
+            yesText: string
+            noTitle: string
+            noText: string
+            calendar: string
+            back: string
+        }
     }
 
     loader: {
@@ -253,10 +280,43 @@ export default defineWeddingConfig({
     rsvp: {
         deadlineISO: '2026-12-05T23:59:00+01:00', // PLACEHOLDER
         maxGuestsPerInvite: 4, // PLACEHOLDER
-        askAddress: false, // enable only if the client states a purpose
+        askAddress: true, // enable only if the client states a purpose
         addressPurpose: 'So the couple can post you a thank-you note.',
         allowEditUntilDeadline: true,
         defaultCountry: 'NG',
+        copy: {
+            eyebrow: 'Kindly respond',
+            title: 'Will you be joining us?',
+            attendLabel: 'Your answer',
+            yes: 'I’ll be there',
+            no: 'With regret, I can’t',
+            name: 'Full name',
+            phone: 'Phone number',
+            phoneHint: 'Outside Nigeria? Start with your country code, like +1 or +44.',
+            guests: 'Number of guests, including you',
+            address: 'Address',
+            message: 'A note for the couple (optional)',
+            send: 'Send my reply',
+            sending: 'Sending…',
+            delivered: 'Your reply has been delivered',
+            closed: 'RSVPs are now closed.',
+            errors: {
+                attending: 'Please choose your answer',
+                phone: 'Please check your phone number',
+                token: 'Please complete the security check',
+                generic: 'We couldn’t send your reply. Please try again in a moment.',
+                closed: 'RSVPs have now closed.',
+            },
+        },
+        thanks: {
+            eyebrow: 'Thank you',
+            yesTitle: 'We can’t wait to celebrate with you',
+            yesText: 'Your reply has reached the couple. Save the day to your calendar so you don’t miss a moment.',
+            noTitle: 'You will be missed',
+            noText: 'Thank you for letting us know. You will be in our hearts on the day.',
+            calendar: 'Add to calendar',
+            back: 'Back to the invitation',
+        },
     },
 
     // Transcribe from the card only after the client confirms they may be public.
