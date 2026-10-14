@@ -42,6 +42,8 @@ const onOpen = () => {
                 <SectionColors />
                 <SectionOrder />
                 <SectionRsvp />
+                <SectionFaq />
+                <SectionClosing />
             </main>
             <MusicToggle />
         </template>

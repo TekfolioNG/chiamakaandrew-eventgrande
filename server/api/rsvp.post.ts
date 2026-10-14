@@ -50,7 +50,7 @@ export default defineEventHandler(async (event) => {
         phone,
         attending: input.attending,
         guests,
-        address: input.address,
+        email: input.email.toLowerCase(),
         message: input.message,
         createdAt: existing?.createdAt ?? now,
         updatedAt: now,

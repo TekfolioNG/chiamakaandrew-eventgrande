@@ -111,3 +111,11 @@
 .band-rsvp {
     background: linear-gradient(180deg, #05060a 0%, #040508 100%);
 }
+
+.band-faq {
+    background: linear-gradient(180deg, #040508 0%, #060912 100%);
+}
+
+.band-closing {
+    background: linear-gradient(180deg, #060912 0%, #0a0f1e 55%, #06070a 100%);
+}

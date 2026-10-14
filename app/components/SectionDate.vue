@@ -254,12 +254,14 @@ const finish = () => {
 }
 
 // the page below grows once the countdown appears, so scroll effects are re-measured
+const dateRevealed = useState<boolean>('date-revealed', () => false)
+
 watch(revealed, async (v) => {
     if (!v) return
+    dateRevealed.value = true
     await nextTick()
     ScrollTrigger.refresh()
 })
-
 onMounted(async () => {
     gsap.registerPlugin(ScrollTrigger)
     reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches

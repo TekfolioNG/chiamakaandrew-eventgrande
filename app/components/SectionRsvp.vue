@@ -18,7 +18,7 @@ const form = reactive({
     attending: null as boolean | null,
     phone: '',
     guests: 1,
-    address: '',
+    email: '',
     message: '',
     website: '', // honeypot: stays empty for real people
 })
@@ -44,7 +44,7 @@ const validate = () => {
         attending: form.attending ?? false,
         phone: form.phone,
         guests: form.attending ? form.guests : 0,
-        address: form.address,
+        email: form.email,
         message: form.message,
     })
     if (!parsed.success) {
@@ -80,7 +80,7 @@ const submit = async () => {
                 attending: form.attending,
                 phone: form.phone,
                 guests: form.attending ? form.guests : 0,
-                address: form.address,
+                email: form.email,
                 message: form.message,
                 token: token.value,
                 website: form.website,
@@ -151,11 +151,11 @@ const finish = () => navigateTo('/thank-you')
                     </select>
                 </div>
 
-                <div v-if="cfg.askAddress" class="field" :class="{ 'has-error': errors.address }">
-                    <label for="rsvp-address">{{ c.address }}</label>
-                    <textarea id="rsvp-address" v-model="form.address" rows="2" maxlength="300"
-                        autocomplete="street-address" aria-describedby="rsvp-address-hint" />
-                    <p id="rsvp-address-hint" class="field__hint">{{ errors.address || cfg.addressPurpose }}</p>
+                <div v-if="cfg.askEmail" class="field" :class="{ 'has-error': errors.email }">
+                    <label for="rsvp-email">{{ c.email }}</label>
+                    <input id="rsvp-email" v-model="form.email" type="email" inputmode="email" autocomplete="email"
+                        maxlength="120" :aria-invalid="!!errors.email" aria-describedby="rsvp-email-hint">
+                    <p id="rsvp-email-hint" class="field__hint">{{ errors.email || cfg.emailPurpose }}</p>
                 </div>
 
                 <div class="field" :class="{ 'has-error': errors.message }">

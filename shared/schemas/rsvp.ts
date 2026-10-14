@@ -5,7 +5,11 @@ export const rsvpSchema = z.object({
     attending: z.boolean(),
     phone: z.string().trim().min(6, 'Please enter your phone number').max(30, 'That number looks too long'),
     guests: z.number().int().min(0).max(20),
-    address: z.string().trim().max(300, 'Please keep the address under 300 characters'),
+    email: z
+        .string()
+        .trim()
+        .max(120, 'That email address looks too long')
+        .regex(/^$|^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, 'Please check your email address'),
     message: z.string().trim().max(500, 'Please keep your note under 500 characters'),
 })
 

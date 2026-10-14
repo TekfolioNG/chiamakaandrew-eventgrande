@@ -28,6 +28,10 @@ export interface Swatch {
     hex: string // sampled from the invitation card; re-sample from the source file
     hint: string // shown when a guest taps the swatch
 }
+export interface FaqItem {
+    q: string
+    a: string
+}
 
 export interface TimelineEvent {
     id: string
@@ -105,8 +109,8 @@ export interface WeddingConfig {
     rsvp: {
         deadlineISO: string // PLACEHOLDER; the API refuses RSVPs after this
         maxGuestsPerInvite: number // PLACEHOLDER; overridable per guest token
-        askAddress: boolean
-        addressPurpose: string // shown to guests; must state why we ask
+        askEmail: boolean
+        emailPurpose: string// shown to guests; must state why we ask
         allowEditUntilDeadline: boolean
         defaultCountry: string // ISO 3166-1 alpha-2 for the phone picker
         copy: {
@@ -119,13 +123,13 @@ export interface WeddingConfig {
             phone: string
             phoneHint: string
             guests: string
-            address: string
+            email: string
             message: string
             send: string
             sending: string
             delivered: string
             closed: string
-            errors: { attending: string; phone: string; token: string; generic: string; closed: string }
+            errors: { attending: string; phone: string; token: string; generic: string; closed: string; email: string }
         }
         thanks: {
             eyebrow: string
@@ -175,6 +179,22 @@ export interface WeddingConfig {
     details: { eyebrow: string; lead: string; mapsButton: string; calendarButton: string }
     colorDay: { eyebrow: string; title: string; hint: string }
     order: { eyebrow: string; title: string }
+    faq: { eyebrow: string; title: string; items: FaqItem[] }
+    closing: {
+        line: string
+        signoff: string
+        share: boolean
+        whatsapp: string
+        copy: string
+        copied: string
+    }
+    footer: {
+        rights: string
+        organizerLabel: string
+        organizer: { name: string; url: string }
+        developerLabel: string
+        developer: { name: string; url: string }
+    }
 }
 
 // Anything listed here blocks the production build (checked later by scripts/check-config.mjs)
@@ -280,8 +300,8 @@ export default defineWeddingConfig({
     rsvp: {
         deadlineISO: '2026-12-05T23:59:00+01:00', // PLACEHOLDER
         maxGuestsPerInvite: 4, // PLACEHOLDER
-        askAddress: true, // enable only if the client states a purpose
-        addressPurpose: 'So the couple can post you a thank-you note.',
+        askEmail: true,
+        emailPurpose: 'So the couple can send you a thank-you note.',
         allowEditUntilDeadline: true,
         defaultCountry: 'NG',
         copy: {
@@ -294,7 +314,7 @@ export default defineWeddingConfig({
             phone: 'Phone number',
             phoneHint: 'Outside Nigeria? Start with your country code, like +1 or +44.',
             guests: 'Number of guests, including you',
-            address: 'Address',
+            email: 'Email address (optional)',
             message: 'A note for the couple (optional)',
             send: 'Send my reply',
             sending: 'Sending…',
@@ -306,6 +326,7 @@ export default defineWeddingConfig({
                 token: 'Please complete the security check',
                 generic: 'We couldn’t send your reply. Please try again in a moment.',
                 closed: 'RSVPs have now closed.',
+                email: 'Please check your email address',
             },
         },
         thanks: {
@@ -405,7 +426,7 @@ export default defineWeddingConfig({
     },
 
     colorDay: {
-        eyebrow: 'Color of the Day',
+        eyebrow: 'Choose your color of the day',
         title: 'Wear the colors of the day',
         hint: 'Tap a color to see how to wear it',
     },
@@ -413,6 +434,57 @@ export default defineWeddingConfig({
     order: {
         eyebrow: 'Order of the day',
         title: 'How the day unfolds',
+    },
+    faq: {
+        eyebrow: 'Good to know',
+        title: 'Before the day',
+        items: [
+            {
+                q: 'What should I wear?',
+                a: 'Pick your favorite: peach, lilac, champagne gold or burnt orange, alone or mixed together. Elegant traditional or formal attire is most welcome, and the colors will make the day’s photographs even more beautiful.',
+            },
+            {
+                q: 'What time should I arrive?',
+                a: 'The wedding begins at 9:00 AM prompt, so please plan to arrive early enough to be comfortably seated before it starts.',
+            },
+            {
+                q: 'How do I find the venue?',
+                a: 'Water Cress Event Center is at 48 Oritshe Street, off Balogun St, Allen, Ikeja, Lagos. Tap “Open in Maps” in the venue section above for directions.',
+            },
+            {
+                q: 'Is there parking?',
+                a: 'Parking arrangements will be confirmed closer to the day. In the meantime, arriving early and sharing rides will make things easier.',
+            },
+            {
+                q: 'Who can I bring with me?',
+                a: 'Please include everyone in your party on the RSVP form, up to the number shown there. If you need to add anyone beyond that, kindly let the family know.',
+            },
+            {
+                q: 'Can I take photos or videos?',
+                a: 'We kindly ask that phones are put away during the ceremony so everyone can be fully present. Photographs from the day will be shared afterwards.',
+            },
+            {
+                q: 'Can I change my reply?',
+                a: 'Yes. Simply send the RSVP form again with the same phone number before the deadline, and your reply will be updated.',
+            },
+        ],
+    },
+
+    closing: {
+        line: 'We can’t wait to celebrate with you',
+        signoff: 'With love',
+        share: true, // set to false to remove the share buttons
+        whatsapp: 'Share on WhatsApp',
+        copy: 'Copy link',
+        copied: 'Link copied',
+    },
+
+    footer: {
+        rights: 'All rights reserved.',
+        organizerLabel: 'Organized by',
+        organizer: { name: 'Eventgrande', url: 'https://eventgrande.org' },
+        developerLabel: 'Website development by',
+        developer: { name: 'Tekfolio', url: 'https://tekfolio.ng/' },
     },
 })
 
