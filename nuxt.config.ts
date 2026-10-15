@@ -35,14 +35,20 @@ export default defineNuxtConfig({
 
   // Clean Hybrid Rendering Setup: Perfect for a wedding application
   routeRules: {
-    '/': { prerender: true },      // Landers/Home are completely static HTML files
-    '/i/**': { ssr: true },        // Dynamic invitations rendered instantly on the server
-    '/admin/**': { ssr: false },   // Private dashboards load as a client-side Single Page App (SPA)
+    '/': { prerender: true },
+    '/i/**': { ssr: true },
+    '/admin': { ssr: false },
+    '/admin/**': { ssr: false },
   },
+  runtimeConfig: {
+    turnstile: { secretKey: '' },
+    access: { teamDomain: '', aud: '' },
+    public: { siteUrl: '' },
+  },
+
   nitro: {
-    // RSVPs: a local folder in development, a Cloudflare KV namespace (bound as RSVP) once deployed
+    prerender: { autoSubfolderIndex: false }, // matches how Cloudflare Pages serves pages
     storage: { rsvp: { driver: 'cloudflare-kv-binding', binding: 'RSVP' } },
     devStorage: { rsvp: { driver: 'fs', base: './.data/rsvp' } },
   },
-  runtimeConfig: { turnstile: { secretKey: '' } },
 })

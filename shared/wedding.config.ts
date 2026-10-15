@@ -344,12 +344,11 @@ export default defineWeddingConfig({
     contacts: [],
 
     share: {
-        title: 'Chiamaka & Andrew — 19 December 2026',
+        title: 'You’re specially invited: Chiamaka & Andrew',
         personalTitle: 'Dear {guest}, you are invited to Chiamaka & Andrew’s wedding',
-        description: 'Saturday 19 December 2026 · Water Cress Event Center, Allen, Ikeja, Lagos.',
+        description: 'Open your invitation and scratch to reveal the date.',
         ogImage: '/og/invite-1200x630.jpg',
     },
-
     features: {
         personalizedLinks: true,
         livestream: { enabled: false, url: '' }, // decide with the client; many RSVP contacts are abroad
