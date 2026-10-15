@@ -60,7 +60,20 @@ const validate = () => {
     return Object.keys(errors).length === 0
 }
 
+// Go to the thank-you page once. RsvpFlight calls this when its animation ends,
+// and a timer calls it too, so a stuck animation can never leave the guest stranded.
+let fallback: ReturnType<typeof setTimeout> | undefined
+let navigated = false
+const finish = () => {
+    if (navigated) return
+    navigated = true
+    clearTimeout(fallback)
+    return navigateTo('/thank-you')
+}
+onBeforeUnmount(() => clearTimeout(fallback))
+
 const submit = async () => {
+    if (sending.value || flying.value) return // ignore double clicks
     serverError.value = ''
 
     if (!validate()) {
@@ -87,6 +100,8 @@ const submit = async () => {
             },
         })
         result.value = { attending: form.attending === true, name: form.name.trim() }
+        flying.value = true // starts RsvpFlight, which emits "done" and calls finish()
+        fallback = setTimeout(finish, 5000)
     } catch (e) {
         const err = e as { statusCode?: number; statusMessage?: string; data?: { statusMessage?: string } }
         const message = err.data?.statusMessage ?? err.statusMessage
@@ -96,14 +111,13 @@ const submit = async () => {
                 : err.statusCode === 400 && message
                     ? message
                     : c.errors.generic
-        turnstile.value?.reset()
-        token.value = ''
     } finally {
         sending.value = false
+        // A Turnstile token works only once, so get a fresh one after every attempt
+        turnstile.value?.reset()
+        token.value = ''
     }
 }
-
-const finish = () => navigateTo('/thank-you')
 </script>
 
 <template>
@@ -176,7 +190,7 @@ const finish = () => navigateTo('/thank-you')
 
                 <p v-if="serverError" class="form__error" role="alert">{{ serverError }}</p>
 
-                <button type="submit" class="btn btn--gold form__send" :disabled="sending">
+                <button type="submit" class="btn btn--gold form__send" :disabled="sending || flying">
                     {{ sending ? c.sending : c.send }}
                 </button>
             </form>
