@@ -219,8 +219,6 @@ defineExpose({ lift })
     stroke-linejoin: round;
 }
 
-/* Idle motion. Individual transform properties (translate / rotate / scale)
-   leave the plain `transform` free for GSAP's takeoff in step 3. */
 .drone__lift,
 .drone__float,
 .drone__payload {
