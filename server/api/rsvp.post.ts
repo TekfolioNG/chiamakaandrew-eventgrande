@@ -1,9 +1,41 @@
+import { getRequestIP, type H3Event } from 'h3'
 import { rsvpSchema } from '../../shared/schemas/rsvp'
 import { normalizePhone } from '../../shared/utils/phone'
 import config from '../../shared/wedding.config'
 
 type Body = Record<string, unknown>
 type Stored = { createdAt?: string }
+
+// Asks Cloudflare whether the Turnstile check was really passed
+const verifyTurnstile = async (event: H3Event, token: string): Promise<boolean> => {
+    const cfg = useRuntimeConfig(event) as unknown as { turnstile?: { secretKey?: string } }
+    const secret = cfg.turnstile?.secretKey
+
+    // no key configured: allowed in development only, never in production
+    if (!secret) {
+        console.warn('[rsvp] The Turnstile secret key is not set on this Worker')
+        return import.meta.dev
+    }
+    if (!token) {
+        console.warn('[rsvp] No Turnstile token arrived with the form')
+        return false
+    }
+
+    try {
+        const res = await $fetch<{ success: boolean; 'error-codes'?: string[] }>(
+            'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+            {
+                method: 'POST',
+                body: { secret, response: token, remoteip: getRequestIP(event) },
+            },
+        )
+        if (!res.success) console.warn('[rsvp] Turnstile rejected the check:', res['error-codes'])
+        return res.success === true
+    } catch (e) {
+        console.warn('[rsvp] Could not reach Turnstile:', e)
+        return false
+    }
+}
 
 export default defineEventHandler(async (event) => {
     const body = (await readBody<Body>(event)) ?? {}

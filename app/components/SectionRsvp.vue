@@ -87,10 +87,15 @@ const submit = async () => {
             },
         })
         result.value = { attending: form.attending === true, name: form.name.trim() }
-        flying.value = true // the drone carries the reply, then we move to the thank-you page
     } catch (e) {
-        const status = (e as { statusCode?: number }).statusCode
-        serverError.value = status === 403 ? c.errors.closed : c.errors.generic
+        const err = e as { statusCode?: number; statusMessage?: string; data?: { statusMessage?: string } }
+        const message = err.data?.statusMessage ?? err.statusMessage
+        serverError.value =
+            err.statusCode === 403
+                ? c.errors.closed
+                : err.statusCode === 400 && message
+                    ? message
+                    : c.errors.generic
         turnstile.value?.reset()
         token.value = ''
     } finally {
