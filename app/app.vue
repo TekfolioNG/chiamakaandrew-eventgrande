@@ -1,9 +1,20 @@
 <script setup lang="ts">
 const w = useWedding()
-const site = useRuntimeConfig().public.siteUrl as string
+const site = (useRuntimeConfig().public.siteUrl as string | undefined)?.trim()
 
 // WhatsApp needs full web addresses for the preview image
-const absolute = (path: string) => new URL(path, site || 'http://localhost:3000').href
+const absolute = (path: string) => {
+  const bases = [site, site && `https://${site}`, 'http://localhost:3000']
+  for (const base of bases) {
+    if (!base) continue
+    try {
+      return new URL(path, base).href
+    } catch {
+      /* try the next base */
+    }
+  }
+  return path
+}
 
 useSeoMeta({
   title: w.share.title,
