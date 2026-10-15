@@ -361,7 +361,7 @@ export default defineWeddingConfig({
             'You’re here, and that means a lot to us.',
             'A moment, please...',
             'We’re preparing your invitation.',
-            'So we can save you a seat for our day.',
+            'So we can save you your special seat.',
         ],
         lineMs: 2000,
         minMs: 6000, // 3 lines x 1.8s, so every line is seen once
