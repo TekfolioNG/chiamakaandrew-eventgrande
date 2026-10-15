@@ -2,7 +2,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineNuxtConfig({
   // Crucial for Nuxt 3/4 to lock features and silence terminal warnings
-  compatibilityDate: '2024-09-19',
+  compatibilityDate: '2025-04-01',
 
   devtools: { enabled: true },
 
