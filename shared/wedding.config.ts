@@ -344,7 +344,7 @@ export default defineWeddingConfig({
     contacts: [],
 
     share: {
-        title: 'You’re specially invited: Chiamaka & Andrew',
+        title: 'Chiamaka weds Andrew! You’re specially invited.',
         personalTitle: 'Dear {guest}, you are invited to Chiamaka & Andrew’s wedding',
         description: 'Open your invitation and scratch to reveal the date.',
         ogImage: '/og/invite-1200x630.jpg',
