@@ -47,7 +47,14 @@ export default defineNuxtConfig({
   },
 
   nitro: {
-    prerender: { autoSubfolderIndex: false }, // matches how Cloudflare Pages serves pages
+    cloudflare: {
+      deployConfig: true, // Nitro writes the Workers deploy file for us
+      nodeCompat: true,
+      wrangler: {
+        name: 'chiamakaandrew-eventgrande', // exactly the Worker's name in your dashboard
+        kv_namespaces: [{ binding: 'RSVP', id: 'e1101592d13e4361a1157ad0fe1e6218' }],
+      },
+    },
     storage: { rsvp: { driver: 'cloudflare-kv-binding', binding: 'RSVP' } },
     devStorage: { rsvp: { driver: 'fs', base: './.data/rsvp' } },
   },
