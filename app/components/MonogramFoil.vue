@@ -23,7 +23,6 @@ defineProps<{ src: string; alt: string }>()
     filter: brightness(0.45) saturate(0.85) drop-shadow(0 0 14px rgb(212 180 131 / 0.18));
 }
 
-/* the gold and the light are cut to the monogram's own shape */
 .foil__gold,
 .foil__shine {
     position: absolute;
