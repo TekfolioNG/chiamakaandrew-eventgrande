@@ -180,7 +180,6 @@ const onDown = (e: PointerEvent) => {
 }
 const onMove = (e: PointerEvent) => {
     const p = pos(e)
-    // the light on the foil follows the pointer
     cardEl.value?.style.setProperty('--mx', `${(p.x / (cw || 1)) * 100}%`)
     cardEl.value?.style.setProperty('--my', `${(p.y / (ch || 1)) * 100}%`)
     if (!drawing) return
