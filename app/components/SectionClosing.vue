@@ -146,7 +146,6 @@ const place = computed(() => (dateRevealed.value ? [longDate, ...w.reveal.place]
     margin-top: var(--space-2);
 }
 
-/* ---------- footer: quiet, but still readable ---------- */
 .footer {
     display: grid;
     justify-items: center;
